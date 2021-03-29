@@ -71,6 +71,9 @@ func (s *service) process(ctx context.Context, errCh chan error) {
 		return
 	}
 
+	// We sleep for 20 seconds to allow the conodes to be up and running
+	time.Sleep(25 * time.Second)
+
 	// 4. Reset the DARCs
 	s.runResetDARCScript(ctx)
 	if err != nil {
