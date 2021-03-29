@@ -45,34 +45,34 @@ func (s *service) reset() error {
 }
 
 // process does the following steps in order:
-// 1. Stop the agents
-// 2. Replace the database with a snapshot
-// 3. Start the agents
-// 4. Reset the DARCs
+// 1. Execute the stop script
+// 2. Execute replace DB script
+// 3. Execute the start script
+// 4. Execute the reset DARC script
 func (s *service) process(ctx context.Context, errCh chan error) {
 	// 1. Stop the agents
-	err := s.stopAgents(ctx)
+	err := s.runStopScript(ctx)
 	if err != nil {
 		errCh <- err
 		return
 	}
 
 	// 2. Replace the databases
-	s.replaceDatabase(ctx)
+	s.runReplaceDBScript(ctx)
 	if err != nil {
 		errCh <- err
 		return
 	}
 
 	// 3. Start the agents
-	s.startAgents(ctx)
+	s.runStartScript(ctx)
 	if err != nil {
 		errCh <- err
 		return
 	}
 
 	// 4. Reset the DARCs
-	s.resetDARCs(ctx)
+	s.runResetDARCScript(ctx)
 	if err != nil {
 		errCh <- err
 		return
@@ -81,58 +81,60 @@ func (s *service) process(ctx context.Context, errCh chan error) {
 	errCh <- nil
 }
 
-func (s *service) resetDARCs(ctx context.Context) error {
-	nathDarcCmd := command{
-		Name:      "bcadmin",
-		Arguments: []string{"darc", "rule", "--darc", "4401770705c2140bb4d0e364f86b586bebc16c1faf768841794f43d420d781b2", "--rule", "'spawn:calypsoRead'", "--replace", "--identity", "'did:sov:Baqh3nz5QX3zVQ6RWTmQGr'"},
+func runCmd(ctx context.Context, cmd *command) error {
+	cmdInstance := exec.CommandContext(ctx, cmd.Name, cmd.Arguments...)
+	if cmd.Dir != "" {
+		cmdInstance.Dir = cmd.Dir
 	}
 
-	resetCommands := []command{nathDarcCmd}
-
-	for _, resetCmd := range resetCommands {
-		cmd := exec.CommandContext(ctx, resetCmd.Name, resetCmd.Arguments...)
-
-		_, err := cmd.Output()
-		if err != nil {
-			return xerrors.Errorf("failed to reset DARC: %v", err)
-		}
+	_, err := cmdInstance.Output()
+	if err != nil {
+		return xerrors.Errorf("failed to reset DARC: %v", err)
 	}
 
 	return nil
 }
 
-func (s *service) stopAgents(ctx context.Context) error {
-	agentNames := []string{"researcher", "biobank", "dotnet"}
-	for _, agent := range agentNames {
-		_, err := exec.CommandContext(ctx, "pkill", "-SIGINT", agent).Output()
-		if err != nil {
-			return xerrors.Errorf("failed to execute stop agent command: %v", err)
-		}
+func (s *service) runResetDARCScript(ctx context.Context) error {
+	resetCmd := &command{
+		Dir:       "/home/dedis/bin",
+		Name:      "sh",
+		Arguments: []string{"./resetDarc"},
+	}
+
+	err := runCmd(ctx, resetCmd)
+	if err != nil {
+		return xerrors.Errorf("failed to run command: %v", err)
 	}
 
 	return nil
 }
 
-func (s *service) replaceDatabase(ctx context.Context) error {
-	_, err := exec.CommandContext(ctx, "rm", "-rf",
-		"/home/dedis/.indy_wallet/biobank",
-		"/home/dedis/.indy_wallet/researcher",
-		"/home/dedis/.indy_wallet/mediator.twins-project.org",
-	).Output()
-
-	if err != nil {
-		return xerrors.Errorf("failed to remove databases: %v", err)
+func (s *service) runStopScript(ctx context.Context) error {
+	stopCmd := &command{
+		Dir:       "/home/dedis/bin",
+		Name:      "sh",
+		Arguments: []string{"./stop"},
 	}
 
-	_, err = exec.CommandContext(ctx, "cp", "-R",
-		"/home/dedis/snapshots/biobank",
-		"/home/dedis/snapshots/researcher",
-		"/home/dedis/snapshots/mediator.twins-project.org",
-		"/home/dedis/.indy_wallet/",
-	).Output()
-
+	err := runCmd(ctx, stopCmd)
 	if err != nil {
-		return xerrors.Errorf("failed to copy snapshots: %v", err)
+		return xerrors.Errorf("failed to run command: %v", err)
+	}
+
+	return nil
+}
+
+func (s *service) runReplaceDBScript(ctx context.Context) error {
+	replaceDB := &command{
+		Dir:       "/home/dedis/bin",
+		Name:      "sh",
+		Arguments: []string{"./replaceDB"},
+	}
+
+	err := runCmd(ctx, replaceDB)
+	if err != nil {
+		return xerrors.Errorf("failed to run command: %v", err)
 	}
 
 	return nil
@@ -144,33 +146,16 @@ type command struct {
 	Arguments []string
 }
 
-func (s *service) startAgents(ctx context.Context) error {
-	researcherCmd := command{
-		Dir:       "/home/dedis/twins",
-		Name:      "./researcher",
-		Arguments: []string{"agent", "--path", "~/.indy_wallet/researcher/peerstore", "--vdri-endpoint", "'http://localhost:4001'", "--did", "did:sov:FUp9R3oNxdWAMgB81A22ft", "--bcId", "'9832e2e66e1441b0f0da5011d50882cc49783b64af5371c6ac60b938f8a4e60c'", "--roster", "./roster.toml", "start"},
-	}
-	biobankCmd := command{
-		Dir:       "/home/dedis/twins",
-		Name:      "./biobank",
-		Arguments: []string{"agent", "--path", "~/.indy_wallet/biobank/peerstore", "--vdri-endpoint", "'http://localhost:4001'", "--did", "did:sov:YKhCeTM8YsR8iQX16BaKdp", "start"},
-	}
-	mediatorCmd := command{
-		Dir:       "/home/dedis/aries-mediator",
-		Name:      "dotnet",
-		Arguments: []string{"run", "--project", "MediatorAgent"},
+func (s *service) runStartScript(ctx context.Context) error {
+	startCmd := &command{
+		Dir:       "/home/dedis/bin",
+		Name:      "sh",
+		Arguments: []string{"./start"},
 	}
 
-	commands := []command{researcherCmd, biobankCmd, mediatorCmd}
-
-	for _, c := range commands {
-		cmd := exec.CommandContext(ctx, c.Name, c.Arguments...)
-		cmd.Dir = c.Dir
-
-		err := cmd.Start()
-		if err != nil {
-			return xerrors.Errorf("failed to execute a start agent command: %v", err)
-		}
+	err := runCmd(ctx, startCmd)
+	if err != nil {
+		return xerrors.Errorf("failed to run command: %v", err)
 	}
 
 	return nil
