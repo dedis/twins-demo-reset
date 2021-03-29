@@ -2,7 +2,6 @@
 Description=TWINS Demo Reset Service
 
 [Service]
-User=dedis
 ExecStart=/home/dedis/twins-demo-reset/twins-demo-reset serve
 Restart=always
 
