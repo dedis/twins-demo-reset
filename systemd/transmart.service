@@ -1,0 +1,13 @@
+[Unit]
+Description=Transmart
+PartOf=twins.target
+ReloadPropagatedFrom=twins.target
+
+[Service]
+ExecStart=/usr/bin/java -server -jar -Dcatalina.base=/home/dedis -Dlogging.config=/home/dedis/transmart-core/transmart-api-server/logback.groovy -Dspring.config.location=/home/dedis/transmart-core/transmart-api-server/config.yml /home/dedis/transmart-core/transmart-api-server/build/libs/transmart-api-server-17.2-SNAPSHOT.war
+Type=exec
+Restart=always
+User=dedis
+
+[Install]
+WantedBy=twins.target
