@@ -1,7 +1,5 @@
 [Unit]
 Description=Cothority (Odyssey)
-PartOf=twins.target
-ReloadPropagatedFrom=twins.target
 
 [Service]
 ExecStart=/home/dedis/odyssey/ledger/conode/run_nodes.sh -d /home/dedis/conode_data -v 2 -n 5
@@ -11,4 +9,4 @@ User=dedis
 EnvironmentFile=/home/dedis/odyssey/variables
 
 [Install]
-WantedBy=twins.target
+WantedBy=multi-user.target

@@ -1,4 +1,6 @@
 [Unit]
 Description=TWINS Demo
-Requires=docker.service keycloak.service glowingbear.service transmart.service minio.service cothority.service domanager.service mediator.service indy_vdr.service researcher.service biobank.service
+Wants=keycloak.service glowingbear.service transmart.service minio.service cothority.service domanager.service mediator.service indy_vdr.service researcher.service biobank.service
+ConsistsOf=keycloak.service glowingbear.service transmart.service minio.service cothority.service domanager.service mediator.service indy_vdr.service researcher.service biobank.service
+PropagatesReloadTo=keycloak.service glowingbear.service transmart.service minio.service cothority.service domanager.service mediator.service indy_vdr.service researcher.service biobank.service
 After=network-online.target docker.service

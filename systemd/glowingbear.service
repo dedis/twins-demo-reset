@@ -1,7 +1,5 @@
 [Unit]
 Description=Glowing Bear
-PartOf=twins.target
-ReloadPropagatedFrom=twins.target
 
 [Service]
 ExecStart=/usr/bin/java -server -jar -Dspring.config.location=/home/dedis/gb-backend/gb-backend/config.yml /home/dedis/gb-backend/gb-backend/build/libs/gb-backend-0.1-SNAPSHOT.war
@@ -10,4 +8,4 @@ Restart=always
 User=dedis
 
 [Install]
-WantedBy=twins.target
+WantedBy=multi-user.target

@@ -1,7 +1,5 @@
 [Unit]
 Description=DOManager
-PartOf=twins.target
-ReloadPropagatedFrom=twins.target
 
 [Service]
 ExecStart=/home/dedis/odyssey/domanager/app/app -listen-addr localhost:8085
@@ -12,4 +10,4 @@ EnvironmentFile=/home/dedis/odyssey/variables
 WorkingDirectory=/home/dedis/odyssey/domanager/app
 
 [Install]
-WantedBy=twins.target
+WantedBy=multi-user.target

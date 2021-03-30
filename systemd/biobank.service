@@ -1,7 +1,5 @@
 [Unit]
 Description=Biobank Agent
-PartOf=twins.target
-ReloadPropagatedFrom=twins.target
 
 [Service]
 ExecStart=/bin/sh -c '/bin/echo | /home/dedis/twins/biobank agent --path /home/dedis/.indy_wallet/biobank/peerstore --vdri-endpoint \'http://localhost:4001\' --did did:sov:YKhCeTM8YsR8iQX16BaKdp start'
@@ -10,4 +8,4 @@ Restart=always
 User=dedis
 
 [Install]
-WantedBy=twins.target
+WantedBy=multi-user.target
