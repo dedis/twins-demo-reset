@@ -16,9 +16,10 @@ jobs:
 
       - name: Check if version has changed
         run: |
-          git diff --exit-code --ignore-space-at-eol -b -w --ignore-blank-lines HEAD~1 HEAD VERSION
+          git diff --quiet --exit-code --ignore-space-at-eol -b -w --ignore-blank-lines HEAD~1 HEAD VERSION
           echo "VERSION_CHANGED=$?" >> $GITHUB_ENV
           echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
+        shell: bash {0}
 
       - name: Push a new tag if version has changed
         uses: actions/github-script@v3
