@@ -39,6 +39,8 @@ jobs:
     needs: new-tag
     steps:
       - uses: actions/checkout@master
+        with:
+          fetch-depth: 0 # Until https://github.com/actions/checkout/issues/448 gets fixed
 
       - name: Setup Go
         uses: actions/setup-go@v2
@@ -55,7 +57,7 @@ jobs:
       - name: Install fpm
         run: |
           sudo apt-get install ruby ruby-dev rubygems build-essential
-          gem install --no-document fpm
+          sudo gem install --no-document fpm
 
       - name: Create deb archive
         run: ./build-deb.sh
