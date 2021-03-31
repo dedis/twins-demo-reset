@@ -51,7 +51,7 @@ func (s *service) reset() error {
 // 4. Execute the reset DARC script
 func (s *service) process(ctx context.Context, errCh chan error) {
 	// 1. Stop the agents
-	err := s.runStopScript(ctx)
+	err := s.stopTwins(ctx)
 	if err != nil {
 		errCh <- err
 		return
@@ -65,14 +65,14 @@ func (s *service) process(ctx context.Context, errCh chan error) {
 	}
 
 	// 3. Start the agents
-	s.runStartScript(ctx)
+	s.startTwins(ctx)
 	if err != nil {
 		errCh <- err
 		return
 	}
 
 	// We sleep for 20 seconds to allow the conodes to be up and running
-	time.Sleep(25 * time.Second)
+	time.Sleep(20 * time.Second)
 
 	// 4. Reset the DARCs
 	s.runResetDARCScript(ctx)
@@ -107,17 +107,17 @@ func (s *service) runResetDARCScript(ctx context.Context) error {
 
 	err := runCmd(ctx, resetCmd)
 	if err != nil {
-		return xerrors.Errorf("failed to run command: %v", err)
+		log.Printf("failed to reset DARCs: %v", err)
+		return xerrors.Errorf("failed to reset DARCs")
 	}
 
 	return nil
 }
 
-func (s *service) runStopScript(ctx context.Context) error {
+func (s *service) stopTwins(ctx context.Context) error {
 	stopCmd := &command{
-		Dir:       "/home/dedis/bin",
-		Name:      "sh",
-		Arguments: []string{"./stop"},
+		Name:      "systemctl",
+		Arguments: []string{"--user", "stop", "twins.target"},
 	}
 
 	err := runCmd(ctx, stopCmd)
@@ -130,14 +130,15 @@ func (s *service) runStopScript(ctx context.Context) error {
 
 func (s *service) runReplaceDBScript(ctx context.Context) error {
 	replaceDB := &command{
-		Dir:       "/home/dedis/bin",
+		Dir:       "/home/twins/bin",
 		Name:      "sh",
 		Arguments: []string{"./replaceDB"},
 	}
 
 	err := runCmd(ctx, replaceDB)
 	if err != nil {
-		return xerrors.Errorf("failed to run command: %v", err)
+		log.Printf("failed to replace database with snapshots: %v", err)
+		return xerrors.Errorf("failed to replace database with snapshots")
 	}
 
 	return nil
@@ -149,16 +150,16 @@ type command struct {
 	Arguments []string
 }
 
-func (s *service) runStartScript(ctx context.Context) error {
+func (s *service) startTwins(ctx context.Context) error {
 	startCmd := &command{
-		Dir:       "/home/dedis/bin",
-		Name:      "sh",
-		Arguments: []string{"./start"},
+		Name:      "systemctl",
+		Arguments: []string{"--user", "start", "twins.target"},
 	}
 
 	err := runCmd(ctx, startCmd)
 	if err != nil {
-		return xerrors.Errorf("failed to run command: %v", err)
+		log.Printf("failed to start twins.target: %v", err)
+		return xerrors.Errorf("failed to start twins.target")
 	}
 
 	return nil

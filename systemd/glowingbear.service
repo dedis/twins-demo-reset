@@ -5,7 +5,6 @@ Description=Glowing Bear
 ExecStart=/usr/bin/java -server -jar -Dspring.config.location=/home/dedis/gb-backend/gb-backend/config.yml /home/dedis/gb-backend/gb-backend/build/libs/gb-backend-0.1-SNAPSHOT.war
 Type=exec
 Restart=always
-User=dedis
 
 [Install]
 WantedBy=multi-user.target

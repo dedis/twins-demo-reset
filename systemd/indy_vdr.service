@@ -5,7 +5,6 @@ Description=Indy VDR Proxy
 ExecStart=/home/dedis/indy-vdr/target/release/indy-vdr-proxy -g /home/dedis/indy-vdr/von.txn -p 4001
 Type=exec
 Restart=always
-User=dedis
 
 [Install]
 WantedBy=multi-user.target

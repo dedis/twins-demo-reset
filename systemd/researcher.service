@@ -5,7 +5,6 @@ Description=Researcher Agent
 ExecStart=/home/dedis/twins/researcher agent --path /home/dedis/.indy_wallet/researcher/peerstore  --vdri-endpoint 'http://localhost:4001' --did did:sov:FUp9R3oNxdWAMgB81A22ft --bcId '9832e2e66e1441b0f0da5011d50882cc49783b64af5371c6ac60b938f8a4e60c' --roster /home/dedis/twins/roster.toml start
 Type=exec
 Restart=always
-User=dedis
 
 [Install]
 WantedBy=multi-user.target

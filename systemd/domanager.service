@@ -5,7 +5,6 @@ Description=DOManager
 ExecStart=/home/dedis/odyssey/domanager/app/app -listen-addr localhost:8085
 Type=exec
 Restart=always
-User=dedis
 EnvironmentFile=/home/dedis/odyssey/variables
 WorkingDirectory=/home/dedis/odyssey/domanager/app
 
