@@ -1,9 +1,0 @@
-[Unit]
-Description=TWINS Demo Reset Service
-
-[Service]
-ExecStart=/home/dedis/twins-demo-reset/twins-demo-reset serve
-Restart=always
-
-[Install]
-WantedBy=default.target
