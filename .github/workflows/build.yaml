@@ -11,11 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+        with:
+          fetch-depth: 3
 
       - name: Check if version has changed
         run: |
-          ::set-env name=VERSION_CHANGED::$(git diff --exit-code --ignore-space-at-eol -b -w --ignore-blank-lines HEAD~1 HEAD VERSION)
-          ::set-env name=VERSION::$(cat VERSION)
+          echo "VERSION_CHANGED=$(git diff --exit-code --ignore-space-at-eol -b -w --ignore-blank-lines HEAD~1 HEAD VERSION)" >> $GITHUB_ENV
+          echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
 
       - name: Push a new tag if version has changed
         uses: actions/github-script@v3
