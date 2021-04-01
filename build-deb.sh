@@ -19,8 +19,6 @@ find deb ! -perm -a+r -exec chmod a+r {} \;
 
 fpm \
     --force -t deb -a all -s dir -C deb -n twins-demo-reset -v ${VERSION} \
-    --deb-user dedis \
-    --deb-group dedis \
     --before-install pkg/before-install.sh \
     --after-install pkg/after-install.sh \
     --before-remove pkg/before-remove.sh \
