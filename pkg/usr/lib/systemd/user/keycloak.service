@@ -1,5 +1,6 @@
 [Unit]
 Description=Keycloak
+PartOf=twins.target
 
 [Service]
 ExecStart=/home/dedis/keycloak/keycloak-9.0.3/bin/standalone.sh -Dkeycloak.frontendUrl=https://auth.twins-project.org/

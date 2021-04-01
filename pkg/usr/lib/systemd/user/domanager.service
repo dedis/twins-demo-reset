@@ -1,5 +1,6 @@
 [Unit]
 Description=DOManager
+PartOf=twins.target
 
 [Service]
 ExecStart=/home/dedis/odyssey/domanager/app/app -listen-addr localhost:8085

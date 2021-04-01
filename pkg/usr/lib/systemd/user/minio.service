@@ -1,5 +1,6 @@
 [Unit]
 Description=Minio
+PartOf=twins.target
 
 [Service]
 ExecStart=/home/dedis/minio/bin/minio server --address localhost:8084 /home/dedis/minio/data

@@ -1,5 +1,6 @@
 [Unit]
 Description=Indy VDR Proxy
+PartOf=twins.target
 
 [Service]
 ExecStart=/home/dedis/indy-vdr/target/release/indy-vdr-proxy -g /home/dedis/indy-vdr/von.txn -p 4001
