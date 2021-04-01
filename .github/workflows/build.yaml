@@ -32,7 +32,7 @@ jobs:
               ref: "refs/tags/v${{ env.VERSION }}",
               sha: context.sha
             })
-        if: ${{ env.VERSION_CHANGED }}
+        if: ${{ env.VERSION_CHANGED != 0 }}
 
   build:
     runs-on: ubuntu-latest
