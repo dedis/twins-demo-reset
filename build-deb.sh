@@ -6,10 +6,10 @@ rm -rf deb
 
 mkdir -p deb/opt/twins/bin     # install dir
 
+VERSION=$(./twins-demo-reset -v | tr - +)
+
 # binary built by CI
 mv twins-demo-reset deb/opt/twins/bin
-
-VERSION=$(./twins-demo-reset -v | tr - +)
 
 # add systemd units
 cp -a pkg/usr deb
@@ -25,7 +25,7 @@ fpm \
     --after-remove pkg/after-remove.sh \
     --url https://github.com/dedis/twins-demo-reset \
     --description 'An HTTP server to reset twins demo' \
-    --package dist \
+    --package dist.deb \
     .
 
 # cleanup
