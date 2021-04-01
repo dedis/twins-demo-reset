@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - deb
+      - master
 
 env:
   GO_VERSION: 1.15
