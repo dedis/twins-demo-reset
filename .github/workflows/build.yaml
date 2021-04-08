@@ -12,13 +12,13 @@ jobs:
     steps:
       - uses: actions/checkout@master
         with:
-          fetch-depth: 3
+          fetch-depth: 0
 
       - name: Check if tag exists
         run: |
           git rev-parse "v$(cat VERSION)" > /dev/null 2>&1
           echo "TAG_MISSING=$?" >> $GITHUB_ENV
-          echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
+          echo "VERSION=v$(cat VERSION)" >> $GITHUB_ENV
         shell: bash {0}
 
       - name: Push a new tag if its missing
@@ -29,18 +29,10 @@ jobs:
             github.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: "refs/tags/v${{ env.VERSION }}",
+              ref: "refs/tags/${{ env.VERSION }}",
               sha: context.sha
             })
         if: ${{ env.TAG_MISSING != 0 }}
-
-  build:
-    runs-on: ubuntu-latest
-    needs: new-tag
-    steps:
-      - uses: actions/checkout@master
-        with:
-          fetch-depth: 0 # Until https://github.com/actions/checkout/issues/448 gets fixed
 
       - name: Setup Go
         uses: actions/setup-go@v2
@@ -58,6 +50,33 @@ jobs:
         run: |
           sudo apt-get install ruby ruby-dev rubygems build-essential
           sudo gem install --no-document fpm
+        if: ${{ env.TAG_MISSING != 0 }}
 
       - name: Create deb archive
         run: ./build-deb.sh
+        if: ${{ env.TAG_MISSING != 0 }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
+          draft: false
+          prerelease: false
+        if: ${{ env.TAG_MISSING != 0 }}
+
+      - name: Upload debian archive
+        id: upload-bindist
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./twins-demo-reset-${{ env.VERSION }}.deb
+          asset_name: twins-demo-reset-${{ env.VERSION }}.deb
+          asset_content_type: application/vnd.debian.binary-package
+        if: ${{ env.TAG_MISSING != 0 }}
+

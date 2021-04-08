@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # fix permissions
-chown dedis:dedis /opt/twins
+chown -R dedis:dedis /opt/twins
 chmod 755 /opt/twins
 
 DEDIS_UID=$(id -u dedis)
