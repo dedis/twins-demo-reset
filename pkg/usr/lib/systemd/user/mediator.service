@@ -1,11 +1,11 @@
 [Unit]
 Description=Mediator Agent
+PartOf=twins.target
 
 [Service]
 ExecStart=/usr/bin/dotnet run --project /home/dedis/aries-mediator/MediatorAgent
 Type=exec
 Restart=always
-User=dedis
 
 [Install]
 WantedBy=multi-user.target

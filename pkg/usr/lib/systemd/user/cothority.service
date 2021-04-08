@@ -1,11 +1,11 @@
 [Unit]
 Description=Cothority (Odyssey)
+PartOf=twins.target
 
 [Service]
 ExecStart=/home/dedis/odyssey/ledger/conode/run_nodes.sh -d /home/dedis/conode_data -v 2 -n 5
 Type=exec
 Restart=always
-User=dedis
 EnvironmentFile=/home/dedis/odyssey/variables
 
 [Install]

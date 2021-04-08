@@ -1,11 +1,11 @@
 [Unit]
 Description=Minio
+PartOf=twins.target
 
 [Service]
 ExecStart=/home/dedis/minio/bin/minio server --address localhost:8084 /home/dedis/minio/data
 Type=exec
 Restart=always
-User=dedis
 EnvironmentFile=/home/dedis/odyssey/variables
 
 [Install]

@@ -2,7 +2,7 @@
 Description=TWINS Demo Reset Service
 
 [Service]
-ExecStart=/home/dedis/twins-demo-reset/twins-demo-reset serve
+ExecStart=/opt/twins/bin/twins-demo-reset serve
 Restart=always
 
 [Install]

@@ -3,9 +3,9 @@
 This Go package allows resetting the state of the TWINS demo over HTTP. The
 following actions are taken during the reset:
 
-1. All the TWINS related services are stopped. See `/home/dedis/stop`.
+1. All the TWINS related services are stopped. See `pkg/usr/lib/systemd/user/twins.target`.
 2. The researcher, biobank and mediator databases are reset to a snapshot copy.
-3. All the TWINS related services are started. See `/home/dedis/start`.
+3. All the TWINS related services are started. See `pkg/usr/lib/systemd/user/twins.target`.
 4. The DARCs are reset to allow permissions only to the initial owner.
 
 ### Compilation
@@ -28,7 +28,7 @@ Please look at the handler for `/reset-demo` in `/etc/nginx/sites-enabled/wp.con
 for more information.
 
 The server is managed by systemd user instance. Please have a look at
-`twins_demo_reset.service` in the repository root for more information.
+`pkg/usr/lib/systemd/user/twins_demo_reset.service` in the repository root for more information.
 
-The service is referenced at `~/.config/systemd/user/` and enabled using
-`systemctl --user enable twins_demo_reset`
+All systemd units are installed at `/usr/lib/systemd/user` while installing the
+debian archive.
