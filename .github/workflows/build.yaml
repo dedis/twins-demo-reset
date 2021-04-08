@@ -14,14 +14,14 @@ jobs:
         with:
           fetch-depth: 3
 
-      - name: Check if version has changed
+      - name: Check if tag exists
         run: |
-          git diff --quiet --exit-code --ignore-space-at-eol -b -w --ignore-blank-lines HEAD~1 HEAD VERSION
-          echo "VERSION_CHANGED=$?" >> $GITHUB_ENV
+          git rev-parse "v$(cat VERSION)" > /dev/null 2>&1
+          echo "TAG_MISSING=$?" >> $GITHUB_ENV
           echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
         shell: bash {0}
 
-      - name: Push a new tag if version has changed
+      - name: Push a new tag if its missing
         uses: actions/github-script@v3
         with:
           github-token: ${{ github.token }}
@@ -32,7 +32,7 @@ jobs:
               ref: "refs/tags/v${{ env.VERSION }}",
               sha: context.sha
             })
-        if: ${{ env.VERSION_CHANGED != 0 }}
+        if: ${{ env.TAG_MISSING != 0 }}
 
   build:
     runs-on: ubuntu-latest
