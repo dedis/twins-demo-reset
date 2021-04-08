@@ -32,3 +32,5 @@ The server is managed by systemd user instance. Please have a look at
 
 The service is referenced at `~/.config/systemd/user/` and enabled using
 `systemctl --user enable twins_demo_reset`
+
+An update in README.md in first commit
