@@ -44,7 +44,9 @@ jobs:
           go get github.com/ahmetb/govvv
 
       - name: Build
-        run: govvv build
+        run: |
+          git fetch --tags
+          govvv build
 
       - name: Install fpm
         run: |
