@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	// An update in cli.go in the second commit
 	app := &cli.App{
 		Name:  "reset",
 		Usage: "an HTTP server that resets the TWIN agents for the demo",
