@@ -130,7 +130,7 @@ func (s *service) stopTwins(ctx context.Context) error {
 
 func (s *service) runReplaceDBScript(ctx context.Context) error {
 	replaceDB := &command{
-		Dir:       "/home/twins/bin",
+		Dir:       "/home/dedis/bin",
 		Name:      "sh",
 		Arguments: []string{"./replaceDB"},
 	}
