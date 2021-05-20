@@ -58,14 +58,14 @@ func (s *service) process(ctx context.Context, errCh chan error) {
 	}
 
 	// 2. Replace the databases
-	s.runReplaceDBScript(ctx)
+	err = s.runReplaceDBScript(ctx)
 	if err != nil {
 		errCh <- err
 		return
 	}
 
 	// 3. Start the agents
-	s.startTwins(ctx)
+	err = s.startTwins(ctx)
 	if err != nil {
 		errCh <- err
 		return
@@ -75,7 +75,7 @@ func (s *service) process(ctx context.Context, errCh chan error) {
 	time.Sleep(20 * time.Second)
 
 	// 4. Reset the DARCs
-	s.runResetDARCScript(ctx)
+	err = s.runResetDARCScript(ctx)
 	if err != nil {
 		errCh <- err
 		return
