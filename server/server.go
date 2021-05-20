@@ -89,7 +89,9 @@ func runCmd(ctx context.Context, cmd *command) error {
 	if cmd.Dir != "" {
 		cmdInstance.Dir = cmd.Dir
 	}
-	cmdInstance.Env = append(os.Environ(), "BC=/home/dedis/.odyssey-config/bc-9832e2e66e1441b0f0da5011d50882cc49783b64af5371c6ac60b938f8a4e60c.cfg")
+
+	cmdInstance.Env = os.Environ()
+
 	out, err := cmdInstance.CombinedOutput()
 	if err != nil {
 		return xerrors.Errorf("failed to run command: %s %v", out, err)
