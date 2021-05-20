@@ -4,6 +4,8 @@ Description=TWINS Demo Reset Service
 [Service]
 ExecStart=/opt/twins/bin/twins-demo-reset serve
 Restart=always
+Environment="BC_CONFIG=/home/dedis/.odyssey-config"
+Environment="BC=/home/dedis/.odyssey-config/bc-9832e2e66e1441b0f0da5011d50882cc49783b64af5371c6ac60b938f8a4e60c.cfg"
 
 [Install]
 WantedBy=default.target
