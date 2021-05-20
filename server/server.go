@@ -90,9 +90,9 @@ func runCmd(ctx context.Context, cmd *command) error {
 		cmdInstance.Dir = cmd.Dir
 	}
 
-	_, err := cmdInstance.Output()
+	out, err := cmdInstance.Output()
 	if err != nil {
-		return xerrors.Errorf("failed to reset DARC: %v", err)
+		return xerrors.Errorf("failed to run command: %s %v", out, err)
 	}
 
 	return nil
