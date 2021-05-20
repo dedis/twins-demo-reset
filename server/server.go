@@ -90,7 +90,7 @@ func runCmd(ctx context.Context, cmd *command) error {
 		cmdInstance.Dir = cmd.Dir
 	}
 
-	out, err := cmdInstance.Output()
+	out, err := cmdInstance.CombinedOutput()
 	if err != nil {
 		return xerrors.Errorf("failed to run command: %s %v", out, err)
 	}
